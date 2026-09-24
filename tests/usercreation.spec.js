@@ -1,8 +1,8 @@
 const { test, expect } = require('@playwright/test');
+const crypto = require('crypto');
 
 const username = process.env.LOGIN_USERNAME || 'Superadmin';
 const password = process.env.LOGIN_PASSWORD;
-const createdUserPassword = process.env.CREATED_USER_PASSWORD || 'Password@123';
 
 test.use({
   ignoreHTTPSErrors: true
@@ -12,6 +12,8 @@ test('test', async ({ page }) => {
   const uniqueSuffix = Date.now().toString();
   const firstName = `Eatasam${uniqueSuffix}`;
   const lastName = `Ahmed${uniqueSuffix}`;
+  const createdUserPassword = process.env.CREATED_USER_PASSWORD
+    || `Pw-${crypto.randomBytes(12).toString('base64url')}!`;
 
   test.info().annotations.push({
     type: 'created-user',
