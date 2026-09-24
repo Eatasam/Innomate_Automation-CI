@@ -24,7 +24,7 @@ test('test', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Username' }).fill(username);
   await page.getByRole('textbox', { name: 'Password' }).fill(password);
   await page.getByRole('button', { name: 'Sign In' }).click();
-//  await page.getByRole('button', { name: 'Yes' }).click();
+  await page.getByRole('button', { name: 'Yes' }).click();
   await page.getByRole('link', { name: /User Options/ }).click();
   await page.getByRole('link', { name: 'Users' }).click();
   await page.getByRole('textbox', { name: 'Select Account Type' }).click();
