@@ -26,7 +26,7 @@ pipeline {
       }
     }
 
-    stage('Run login test') {
+    stage('Run login and user creation tests') {
       steps {
         withCredentials([
           usernamePassword(
@@ -35,21 +35,7 @@ pipeline {
             passwordVariable: 'LOGIN_PASSWORD'
           )
         ]) {
-          bat 'set BASE_URL=%BASE_URL%&& set IGNORE_HTTPS_ERRORS=%IGNORE_HTTPS_ERRORS%&& call npm.cmd run test:login'
-        }
-      }
-    }
-
-    stage('Run user creation test') {
-      steps {
-        withCredentials([
-          usernamePassword(
-            credentialsId: 'playwright-test-credentials',
-            usernameVariable: 'LOGIN_USERNAME',
-            passwordVariable: 'LOGIN_PASSWORD'
-          )
-        ]) {
-          bat 'set BASE_URL=%BASE_URL%&& set IGNORE_HTTPS_ERRORS=%IGNORE_HTTPS_ERRORS%&& call npx.cmd playwright test tests/usercreation.spec.js --project=chromium'
+          bat 'set BASE_URL=%BASE_URL%&& set IGNORE_HTTPS_ERRORS=%IGNORE_HTTPS_ERRORS%&& call npx.cmd playwright test tests/logintest.spec.js tests/usercreation.spec.js --project=chromium'
         }
       }
     }
