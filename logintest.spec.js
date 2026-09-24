@@ -7,7 +7,7 @@ test.use({
 test('logintest', async ({ page }, testInfo) => {
   const apiResponses = [];
   const responsePromises = [];
-  const username = process.env.LOGIN_USERNAME || 'admin';
+  const username = process.env.LOGIN_USERNAME || 'Superadmin';
   const password = process.env.LOGIN_PASSWORD;
 
   page.on('response', (response) => {
