@@ -15,7 +15,7 @@ test('creates a user with a unique ID', async ({ page, loginPage, credentials })
 
   await loginPage.open();
   await loginPage.signIn(credentials.username, credentials.password);
-  await page.getByRole('button', { name: 'Yes' }).click();
+  await loginPage.waitForAuthenticatedLanding();
   await page.getByRole('link', { name: /User Options/ }).click();
   await page.getByRole('link', { name: 'Users' }).click();
   await page.getByRole('textbox', { name: 'Select Account Type' }).click();

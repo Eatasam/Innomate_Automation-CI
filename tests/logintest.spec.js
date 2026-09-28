@@ -30,9 +30,9 @@ test('user can sign in', async ({ page, loginPage, credentials }, testInfo) => {
     await test.step('Submit valid credentials', () => (
       loginPage.signIn(credentials.username, credentials.password)
     ));
-    await test.step('Dismiss welcome prompt', async () => {
-      await page.getByRole('button', { name: 'Yes' }).click();
-    });
+    await test.step('Wait for authenticated landing', () => (
+      loginPage.waitForAuthenticatedLanding()
+    ));
     await test.step('Verify authenticated navigation', async () => {
       await expect(page.getByRole('link', { name: /User Options/ })).toBeVisible();
     });
