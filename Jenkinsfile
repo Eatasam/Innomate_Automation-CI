@@ -43,10 +43,10 @@ pipeline {
 
   post {
     always {
-      junit testResults: 'reports/results.xml', allowEmptyResults: true
+      junit testResults: 'reports/results.xml', allowEmptyResults: false
       archiveArtifacts(
         artifacts: 'reports/**,test-results/**',
-        allowEmptyArchive: true,
+        allowEmptyArchive: false,
         fingerprint: false
       )
     }
