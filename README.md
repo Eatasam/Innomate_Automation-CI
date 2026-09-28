@@ -34,6 +34,8 @@ If invoking Playwright directly on Windows, use forward slashes in the test path
 
 Set `LOGIN_USERNAME` and `LOGIN_PASSWORD` in `.env` before running authenticated tests. Missing credentials fail with a clear message. The smoke test checks the product login form and does not require credentials.
 
+The user-creation test intentionally leaves its uniquely named account in place. Run it only against a QA environment where persistent test accounts are acceptable.
+
 The login test defaults to `https://10.21.20.200:8500/`; override `BASE_URL` in `.env` for another environment.
 
 ## Record Tests
