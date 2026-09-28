@@ -8,7 +8,7 @@ test.use({
   ignoreHTTPSErrors: true
 });
 
-test('test', async ({ page }) => {
+test('creates a user with a unique ID', async ({ page }) => {
   const uniqueSuffix = Date.now().toString();
   const firstName = `Eatasam${uniqueSuffix}`;
   const lastName = `Ahmed${uniqueSuffix}`;
@@ -29,24 +29,11 @@ test('test', async ({ page }) => {
   await page.getByRole('link', { name: 'Users' }).click();
   await page.getByRole('textbox', { name: 'Select Account Type' }).click();
   await page.getByRole('option', { name: 'Accountant', exact: true }).click();
-  await page.getByRole('textbox', { name: 'Enter User ID' }).click();
   await page.getByRole('textbox', { name: 'Enter User ID' }).fill(uniqueSuffix);
-  await page.locator('.mb-3 > div:nth-child(4)').click();
-  await page.getByRole('textbox', { name: 'Enter First Name' }).click();
-  await page.getByRole('textbox', { name: 'Enter First Name' }).press('CapsLock');
-  await page.getByRole('textbox', { name: 'Enter First Name' }).fill('E');
-  await page.getByRole('textbox', { name: 'Enter First Name' }).press('CapsLock');
   await page.getByRole('textbox', { name: 'Enter First Name' }).fill(firstName);
-  await page.getByRole('textbox', { name: 'Enter First Name' }).press('Tab');
-  await page.getByRole('textbox', { name: 'Enter Last Name' }).press('CapsLock');
-  await page.getByRole('textbox', { name: 'Enter Last Name' }).fill('A');
-  await page.getByRole('textbox', { name: 'Enter Last Name' }).press('CapsLock');
   await page.getByRole('textbox', { name: 'Enter Last Name' }).fill(lastName);
-  await page.getByRole('textbox', { name: 'Enter Password', exact: true }).click();
   await page.getByRole('textbox', { name: 'Enter Password', exact: true }).fill(createdUserPassword);
-  await page.getByRole('textbox', { name: 'Re-enter Password' }).click();
   await page.getByRole('textbox', { name: 'Re-enter Password' }).fill(createdUserPassword);
-  await page.locator('.col-3').click();
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByText('User Account Created Successfully!', { exact: true })).toBeVisible();
 });
