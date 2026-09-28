@@ -18,15 +18,21 @@ pipeline {
     CI = 'true'
   }
 
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+    timestamps()
+    timeout(time: 45, unit: 'MINUTES')
+  }
+
   stages {
     stage('Install dependencies') {
       steps {
         bat 'call npm.cmd ci'
-        bat 'call npx.cmd playwright install'
+        bat 'call npx.cmd playwright install chromium'
       }
     }
 
-    stage('Run login and user creation tests') {
+    stage('Run Chromium test suite') {
       steps {
         withCredentials([
           usernamePassword(
@@ -35,7 +41,12 @@ pipeline {
             passwordVariable: 'LOGIN_PASSWORD'
           )
         ]) {
-          bat 'set BASE_URL=%BASE_URL%&& set IGNORE_HTTPS_ERRORS=%IGNORE_HTTPS_ERRORS%&& call npx.cmd playwright test tests/logintest.spec.js tests/usercreation.spec.js --project=chromium'
+          withEnv([
+            "BASE_URL=${params.BASE_URL}",
+            "IGNORE_HTTPS_ERRORS=${params.IGNORE_HTTPS_ERRORS}"
+          ]) {
+            bat 'call npm.cmd run test:ci'
+          }
         }
       }
     }
@@ -49,6 +60,14 @@ pipeline {
         allowEmptyArchive: false,
         fingerprint: false
       )
+      publishHTML(target: [
+        reportDir: 'reports/html',
+        reportFiles: 'index.html',
+        reportName: 'Playwright HTML Report',
+        keepAll: true,
+        alwaysLinkToLastBuild: true,
+        allowMissing: false
+      ])
     }
   }
 }

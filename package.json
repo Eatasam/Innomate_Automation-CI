@@ -5,6 +5,7 @@
   "description": "JavaScript Playwright framework for web product testing",
   "scripts": {
     "test": "playwright test",
+    "test:ci": "playwright test --project=chromium",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "test:smoke": "playwright test --grep @smoke",

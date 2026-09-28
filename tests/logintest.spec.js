@@ -1,14 +1,7 @@
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../fixtures/test');
 
-test.use({
-  ignoreHTTPSErrors: true
-});
-
-test('logintest', async ({ page }, testInfo) => {
+test('user can sign in', async ({ page, loginPage, credentials }, testInfo) => {
   const apiResponses = [];
-  const responsePromises = [];
-  const username = process.env.LOGIN_USERNAME || 'Superadmin';
-  const password = process.env.LOGIN_PASSWORD;
 
   page.on('response', (response) => {
     const request = response.request();
@@ -16,58 +9,34 @@ test('logintest', async ({ page }, testInfo) => {
       return;
     }
 
-    responsePromises.push((async () => {
-      const timing = request.timing();
-      let body = '[response body unavailable]';
+    const timing = request.timing();
+    const responseUrl = new URL(response.url());
+    responseUrl.search = '';
+    responseUrl.hash = '';
 
-      try {
-        body = await response.text();
-        if (body.length > 10000) {
-          body = `${body.slice(0, 10000)}... [truncated]`;
-        }
-      } catch (error) {
-        body = `[${error.message}]`;
-      }
-
-      apiResponses.push({
-        method: request.method(),
-        url: response.url(),
-        status: response.status(),
-        statusText: response.statusText(),
-        durationMs: timing.responseEnd >= 0
-          ? Math.round(timing.responseEnd - timing.startTime)
-          : null,
-        body
-      });
-    })());
+    apiResponses.push({
+      method: request.method(),
+      url: responseUrl.toString(),
+      status: response.status(),
+      statusText: response.statusText(),
+      durationMs: timing.responseEnd >= 0
+        ? Math.round(timing.responseEnd - timing.startTime)
+        : null
+    });
   });
 
   try {
-    await test.step('Open login page', async () => {
-      await page.goto('/');
+    await test.step('Open login page', () => loginPage.open());
+    await test.step('Submit valid credentials', () => (
+      loginPage.signIn(credentials.username, credentials.password)
+    ));
+    await test.step('Dismiss welcome prompt', async () => {
+      await page.getByRole('button', { name: 'Yes' }).click();
     });
-
-    await test.step('Enter username', async () => {
-      await page.getByRole('textbox', { name: 'Username' }).fill(username);
-    });
-
-    await test.step('Enter password', async () => {
-      await page.getByRole('textbox', { name: 'Password' }).fill(password);
-    });
-
-    await test.step('Submit login form', async () => {
-      await page.getByRole('button', { name: 'Sign In' }).click();
-    });
-
-    await test.step('Wait for login response capture', async () => {
-      await Promise.all(responsePromises);
-    });
-
-    await test.step('Validate authenticated state', async () => {
-      await expect(page).not.toHaveURL(/login/i);
+    await test.step('Verify authenticated navigation', async () => {
+      await expect(page.getByRole('link', { name: /User Options/ })).toBeVisible();
     });
   } finally {
-    await Promise.all(responsePromises);
     await testInfo.attach('api-responses.json', {
       body: JSON.stringify(apiResponses, null, 2),
       contentType: 'application/json'

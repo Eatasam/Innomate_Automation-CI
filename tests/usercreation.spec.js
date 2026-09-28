@@ -1,14 +1,7 @@
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../fixtures/test');
 const crypto = require('crypto');
 
-const username = process.env.LOGIN_USERNAME || 'Superadmin';
-const password = process.env.LOGIN_PASSWORD;
-
-test.use({
-  ignoreHTTPSErrors: true
-});
-
-test('creates a user with a unique ID', async ({ page }) => {
+test('creates a user with a unique ID', async ({ page, loginPage, credentials }) => {
   const uniqueSuffix = Date.now().toString();
   const firstName = `Eatasam${uniqueSuffix}`;
   const lastName = `Ahmed${uniqueSuffix}`;
@@ -20,10 +13,8 @@ test('creates a user with a unique ID', async ({ page }) => {
     description: `First Name: ${firstName}, Last Name: ${lastName}`
   });
 
-  await page.goto('/');
-  await page.getByRole('textbox', { name: 'Username' }).fill(username);
-  await page.getByRole('textbox', { name: 'Password' }).fill(password);
-  await page.getByRole('button', { name: 'Sign In' }).click();
+  await loginPage.open();
+  await loginPage.signIn(credentials.username, credentials.password);
   await page.getByRole('button', { name: 'Yes' }).click();
   await page.getByRole('link', { name: /User Options/ }).click();
   await page.getByRole('link', { name: 'Users' }).click();
