@@ -60,17 +60,19 @@ pipeline {
         allowEmptyArchive: false,
         fingerprint: false
       )
-      try {
-        publishHTML(target: [
-          reportDir: 'reports/html',
-          reportFiles: 'index.html',
-          reportName: 'Playwright HTML Report',
-          keepAll: true,
-          alwaysLinkToLastBuild: true,
-          allowMissing: false
-        ])
-      } catch (NoSuchMethodError missingHtmlPublisher) {
-        echo 'HTML Publisher plugin is not installed; the HTML report remains in Build Artifacts.'
+      script {
+        try {
+          publishHTML(target: [
+            reportDir: 'reports/html',
+            reportFiles: 'index.html',
+            reportName: 'Playwright HTML Report',
+            keepAll: true,
+            alwaysLinkToLastBuild: true,
+            allowMissing: false
+          ])
+        } catch (NoSuchMethodError missingHtmlPublisher) {
+          echo 'HTML Publisher plugin is not installed; the HTML report remains in Build Artifacts.'
+        }
       }
     }
   }
