@@ -18,7 +18,7 @@ module.exports = defineConfig({
     ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === 'true',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: 'on',
     testIdAttribute: 'data-testid'
   },
   projects: [
