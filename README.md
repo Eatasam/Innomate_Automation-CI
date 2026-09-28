@@ -84,9 +84,9 @@ npm run report:json
 
 ## Jenkins CI
 
-This repository includes a Jenkins pipeline in `Jenkinsfile` that runs the full suite on Chromium, including the smoke test. Create a Pipeline job that loads this repository's `Jenkinsfile`, install the Jenkins HTML Publisher plugin, and create a Jenkins username/password credential with the ID `playwright-test-credentials`. The credential is injected only while the tests run as `LOGIN_USERNAME` and `LOGIN_PASSWORD`.
+This repository includes a Jenkins pipeline in `Jenkinsfile` that runs the full suite on Chromium, including the smoke test. Create a Pipeline job that loads this repository's `Jenkinsfile`, and create a Jenkins username/password credential with the ID `playwright-test-credentials`. The credential is injected only while the tests run as `LOGIN_USERNAME` and `LOGIN_PASSWORD`. The HTML Publisher plugin is optional; install it to add a dedicated report link to each build.
 
-Configure the development CI job to trigger this job after its build completes. It can pass the `BASE_URL` and `IGNORE_HTTPS_ERRORS` parameters when invoking the downstream Jenkins job. Jenkins publishes JUnit results and a **Playwright HTML Report** link, and archives JSON, traces, screenshots, videos, and other files. If Jenkins' Content Security Policy still blocks the interactive report, ask a Jenkins administrator to configure a secure resource-root/CSP policy; do not disable the policy globally.
+Configure the development CI job to trigger this job after its build completes. It can pass the `BASE_URL` and `IGNORE_HTTPS_ERRORS` parameters when invoking the downstream Jenkins job. Jenkins publishes JUnit results and archives JSON, traces, screenshots, videos, and other files. When the HTML Publisher plugin is installed, the pipeline also adds a **Playwright HTML Report** link. If Jenkins' Content Security Policy blocks the interactive report, ask a Jenkins administrator to configure a secure resource-root/CSP policy; do not disable the policy globally.
 
 The Jenkins executor must be running on Windows with Node.js, npm, and Git available on `PATH`. The upstream job should trigger this pipeline after its build completes, rather than embedding test commands in the development build. Configure artifact retention on the Jenkins job to match your storage policy; the pipeline keeps the latest 20 builds.
 
